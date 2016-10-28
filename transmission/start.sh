@@ -24,7 +24,7 @@ fi
 echo "STARTING TRANSMISSION"
 exec sudo -u ${RUN_AS} /usr/bin/transmission-daemon -g ${TRANSMISSION_HOME} --logfile ${TRANSMISSION_HOME}/transmission.log &
 
-if [ "$OPENVPN_PROVIDER" = "PIA" ]
+if [ "$openvpn_provider" = "PIA" ]
 then
     echo "STARTING PORT UPDATER"
     exec /etc/transmission/periodicUpdates.sh $4 &

@@ -39,15 +39,15 @@ To run the container use this command:
 $ docker run --privileged  -d \
               -v /your/storage/path/:/data \
               -v /etc/localtime:/etc/localtime:ro \
-              -e "OPENVPN_PROVIDER=PIA" \
+              -e "openvpn_provider=PIA" \
               -e "OPENVPN_CONFIG=Netherlands" \
-              -e "OPENVPN_USERNAME=user" \
-              -e "OPENVPN_PASSWORD=pass" \
+              -e "openvpn_username=user" \
+              -e "openvpn_password=pass" \
               -p 9091:9091 \
               haugene/transmission-openvpn
 ```
 
-You must set the environment variables `OPENVPN_PROVIDER`, `OPENVPN_USERNAME` and `OPENVPN_PASSWORD` to provide basic connection details.
+You must set the environment variables `openvpn_provider`, `openvpn_username` and `openvpn_password` to provide basic connection details.
 
 The `OPENVPN_CONFIG` is an optional variable. If no config is given, a default config will be selected for the provider you have chosen.
 Find available OpenVPN configurations by looking in the openvpn folder of the GitHub repository.
@@ -60,16 +60,16 @@ By default a folder named transmission-home will also be created under /data, th
 ### Required environment options
 | Variable | Function | Example |
 |----------|----------|-------|
-|`OPENVPN_PROVIDER` | Sets the OpenVPN provider to use. | `OPENVPN_PROVIDER=provider`. Supported providers and their config values are listed in the table above. |
-|`OPENVPN_USERNAME`|Your OpenVPN username |`OPENVPN_USERNAME=asdf`|
-|`OPENVPN_PASSWORD`|Your OpenVPN password |`OPENVPN_PASSWORD=asdf`|
+|`openvpn_provider` | Sets the OpenVPN provider to use. | `openvpn_provider=provider`. Supported providers and their config values are listed in the table above. |
+|`openvpn_username`|Your OpenVPN username |`openvpn_username=asdf`|
+|`openvpn_password`|Your OpenVPN password |`openvpn_password=asdf`|
 
 ### Network configuration options
 | Variable | Function | Example |
 |----------|----------|-------|
 |`OPENVPN_CONFIG` | Sets the OpenVPN endpoint to connect to. | `OPENVPN_CONFIG=UK Southampton`|
-|`OPENVPN_OPTS` | Will be passed to OpenVPN on startup | See [OpenVPN doc](https://openvpn.net/index.php/open-source/documentation/manuals/65-openvpn-20x-manpage.html) |
-|`LOCAL_NETWORK` | Sets the local network that should have access. | `LOCAL_NETWORK=192.168.0.0/24`|
+|`openvpn_opts` | Will be passed to OpenVPN on startup | See [OpenVPN doc](https://openvpn.net/index.php/open-source/documentation/manuals/65-openvpn-20x-manpage.html) |
+|`local_network` | Sets the local network that should have access. | `local_network=192.168.0.0/24`|
 
 ### Transmission configuration options
 
@@ -124,7 +124,7 @@ This is because the VPN is active, and since docker is running in a different ip
 to your request will be treated as "non-local" traffic and therefore be routed out through the VPN interface.
 
 ### How to fix this
-The container supports the `LOCAL_NETWORK` environment variable. For instance if your local network uses the IP range 192.168.0.0/24 you would pass `-e LOCAL_NETWORK=192.168.0.0/24`. 
+The container supports the `local_network` environment variable. For instance if your local network uses the IP range 192.168.0.0/24 you would pass `-e local_network=192.168.0.0/24`. 
 
 Alternatively you can reverse proxy the traffic through another container, as that container would be in the docker range. There is a reverse proxy being built with the container. You can run it using the command below or have a look in the repository proxy folder for inspiration for your own custom proxy.
 
@@ -144,7 +144,7 @@ If you have this problem use dockers --dns flag to override the resolv.conf of t
 For example use googles dns servers by adding --dns 8.8.8.8 --dns 8.8.4.4 as parameters to the usual run command.
 
 #### Restart container if connection is lost
-If the VPN connection fails or the container for any other reason loses connectivity, you want it to recover from it. One way of doing this is to set environment variable `OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60` and use the --restart=always flag when starting the container. This way OpenVPN will exit if ping fails over a period of time which will stop the container and then the Docker deamon will restart it.
+If the VPN connection fails or the container for any other reason loses connectivity, you want it to recover from it. One way of doing this is to set environment variable `openvpn_opts=--inactive 3600 --ping 10 --ping-exit 60` and use the --restart=always flag when starting the container. This way OpenVPN will exit if ping fails over a period of time which will stop the container and then the Docker deamon will restart it.
 
 #### Running it on a NAS
 Several popular NAS platforms supports Docker containers. You should be able to set up and configure this container using their web interfaces. Remember that you need a TUN/TAP device to run the container. To set up the device it's probably simplest to install a OpenVPN package for the NAS. This should set up the device. If not, there are some more detailed instructions below.
@@ -161,7 +161,7 @@ You clone this repository and create a new folder under "openvpn" where you put 
 
 There is a script called adjustConfigs.sh that could help you. After putting your .ovpn files in a folder, run that script with your folder name as parameter and it will try to do the changes descibed above. If you use it or not, reading it might give you some help in what you're looking to change in the .ovpn files.
 
-Once you've finished modifying configs, you build the container and run it with OPENVPN_PROVIDER set to the name of the folder of configs you just created (it will be lowercased to match the folder names). And that should be it!
+Once you've finished modifying configs, you build the container and run it with openvpn_provider set to the name of the folder of configs you just created (it will be lowercased to match the folder names). And that should be it!
 
 So, you've just added your own provider and you're feeling pretty good about it! Why don't you fork this repository, commit and push your changes and submit a pull request? Share your provider with the rest of us! :) Please submit your PR to the dev branch in that case.
 
@@ -172,7 +172,7 @@ If you want to run the image with your own provider without building a new image
 Add a new volume mount to your `docker run` command that mounts your config file:
 `-v /path/to/your/config.ovpn:/etc/openvpn/custom/default.ovpn`
 
-Then you can set `OPENVPN_PROVIDER=CUSTOM`and the container will use the config you provided. If you are using AirVPN or other provider with credentials in the config file, you still need to set `OPENVPN_USERNAME` and `OPENVPN_PASSWORD` as this is required by the startup script. They will not be read by the .ovpn file, so you can set them to whatever.
+Then you can set `openvpn_provider=CUSTOM`and the container will use the config you provided. If you are using AirVPN or other provider with credentials in the config file, you still need to set `openvpn_username` and `openvpn_password` as this is required by the startup script. They will not be read by the .ovpn file, so you can set them to whatever.
 
 Note that you still need to modify your .ovpn file as described in the previous section. If you have an separate ca.crt file your volume mount should be a folder containing both the ca.crt and the .ovpn config.
 
@@ -226,7 +226,7 @@ nameserver 8.8.8.8
 nameserver 8.8.4.4
 ```
 - Save the file with [escape] + `:wq!`
-- Create your docker container with a classic command like `docker run --privileged -d -v /volume1/foldername/resolv.conf:/etc/resolv.conf -v /volume1/yourpath/:/data -e "OPENVPN_PROVIDER=PIA" -e "OPENVPN_CONFIG=Netherlands" -e "OPENVPN_USERNAME=XXXXX" -e "OPENVPN_PASSWORD=XXXXX" -p 9091:9091 --name "TransmissionVPN" haugene/transmission-openvpn`
+- Create your docker container with a classic command like `docker run --privileged -d -v /volume1/foldername/resolv.conf:/etc/resolv.conf -v /volume1/yourpath/:/data -e "openvpn_provider=PIA" -e "OPENVPN_CONFIG=Netherlands" -e "openvpn_username=XXXXX" -e "openvpn_password=XXXXX" -p 9091:9091 --name "TransmissionVPN" haugene/transmission-openvpn`
 - To make it work after a nas restart, create an automated task in your synology web interface : go to **Settings Panel > Task Scheduler ** create a new task that run `/volume1/foldername/TUN.sh` as root (select '_root_' in 'user' selectbox). This task will start module that permit the container to run, you can make a task that run on startup. These kind of task doesn't work on my nas so I just made a task that run every minute.
 - Enjoy
 
@@ -256,11 +256,11 @@ ExecStart=/usr/bin/docker run \
         --name transmission-openvpn \
         --privileged \
         -v /home/bittorrent/data/:/data \
-        -e "OPENVPN_PROVIDER=TORGUARD" \
-        -e "OPENVPN_USERNAME=bittorrent@example.com" \
-        -e "OPENVPN_PASSWORD=hunter2" \
+        -e "openvpn_provider=TORGUARD" \
+        -e "openvpn_username=bittorrent@example.com" \
+        -e "openvpn_password=hunter2" \
         -e "OPENVPN_CONFIG=Netherlands" \
-        -e "OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60" \
+        -e "openvpn_opts=--inactive 3600 --ping 10 --ping-exit 60" \
         -e "TRANSMISSION_UMASK=0" \
         -p 9091:9091 \
         --dns 8.8.8.8 \

@@ -1,13 +1,13 @@
 #!/bin/sh
-vpn_provider="$(echo $OPENVPN_PROVIDER | tr '[A-Z]' '[a-z]')"
+vpn_provider="$(echo $openvpn_provider | tr '[A-Z]' '[a-z]')"
 vpn_provider_configs="/etc/openvpn/$vpn_provider"
 if [ ! -d "$vpn_provider_configs" ]; then
-	echo "Could not find OpenVPN provider: $OPENVPN_PROVIDER"
+	echo "Could not find OpenVPN provider: $openvpn_provider"
 	echo "Please check your settings."
 	exit 1
 fi
 
-echo "Using OpenVPN provider: $OPENVPN_PROVIDER"
+echo "Using OpenVPN provider: $openvpn_provider"
 
 if [ ! -z "$OPENVPN_CONFIG" ]
 then
@@ -26,14 +26,14 @@ else
 fi
 
 # add OpenVPN user/pass
-if [ "${OPENVPN_USERNAME}" = "**None**" ] || [ "${OPENVPN_PASSWORD}" = "**None**" ] ; then
+if [ "${openvpn_username}" = "**None**" ] || [ "${openvpn_password}" = "**None**" ] ; then
  echo "OpenVPN credentials not set. Exiting."
  exit 1
 else
   echo "Setting OPENVPN credentials..."
   mkdir -p /config
-  echo $OPENVPN_USERNAME > /config/openvpn-credentials.txt
-  echo $OPENVPN_PASSWORD >> /config/openvpn-credentials.txt
+  echo $openvpn_username > /config/openvpn-credentials.txt
+  echo $openvpn_password >> /config/openvpn-credentials.txt
   chmod 600 /config/openvpn-credentials.txt
 fi
 
@@ -46,12 +46,12 @@ dockerize -template /etc/transmission/environment-variables.tmpl:/etc/transmissi
 
 TRANSMISSION_CONTROL_OPTS="--script-security 2 --up /etc/transmission/start.sh --down /etc/transmission/stop.sh"
 
-if [ -n "${LOCAL_NETWORK-}" ]; then
+if [ -n "${local_network-}" ]; then
   eval $(/sbin/ip r l m 0.0.0.0 | awk '{if($5!="tun0"){print "GW="$3"\nINT="$5; exit}}')
   if [ -n "${GW-}" -a -n "${INT-}" ]; then
-    echo "adding route to local network $LOCAL_NETWORK via $GW dev $INT"
-    /sbin/ip r a "$LOCAL_NETWORK" via "$GW" dev "$INT"
+    echo "adding route to local network $local_network via $GW dev $INT"
+    /sbin/ip r a "$local_network" via "$GW" dev "$INT"
   fi
 fi
 
-exec openvpn $TRANSMISSION_CONTROL_OPTS $OPENVPN_OPTS --config "$OPENVPN_CONFIG"
+exec openvpn $TRANSMISSION_CONTROL_OPTS $openvpn_opts --config "$OPENVPN_CONFIG"

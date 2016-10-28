@@ -25,7 +25,7 @@
     "lpd-enabled": {{ .Env.TRANSMISSION_LPD_ENABLED }},
     "max-peers-global": {{ .Env.TRANSMISSION_MAX_PEERS_GLOBAL }},
     "message-level": {{ .Env.TRANSMISSION_MESSAGE_LEVEL }},
-    "peer-congestion-algorithm": "{{ .Env.TRANSMISSION_PEER_CONGESTION_ALGORITHM }}",
+    "peer-congestion-algorithm": "",
     "peer-id-ttl-hours": {{ .Env.TRANSMISSION_PEER_ID_TTL_HOURS }},
     "peer-limit-global": {{ .Env.TRANSMISSION_PEER_LIMIT_GLOBAL }},
     "peer-limit-per-torrent": {{ .Env.TRANSMISSION_PEER_LIMIT_PER_TORRENT }},
@@ -54,7 +54,7 @@
     "rpc-whitelist-enabled": {{ .Env.TRANSMISSION_RPC_WHITELIST_ENABLED }},
     "scrape-paused-torrents-enabled": {{ .Env.TRANSMISSION_SCRAPE_PAUSED_TORRENTS_ENABLED }},
     "script-torrent-done-enabled": {{ .Env.TRANSMISSION_SCRIPT_TORRENT_DONE_ENABLED }},
-    "script-torrent-done-filename": "{{ .Env.TRANSMISSION_SCRIPT_TORRENT_DONE_FILENAME }}",
+    "script-torrent-done-filename": "",
     "seed-queue-enabled": {{ .Env.TRANSMISSION_SEED_QUEUE_ENABLED }},
     "seed-queue-size": {{ .Env.TRANSMISSION_SEED_QUEUE_SIZE }},
     "speed-limit-down": {{ .Env.TRANSMISSION_SPEED_LIMIT_DOWN }},
@@ -71,4 +71,3 @@
     "watch-dir": "{{ .Env.TRANSMISSION_WATCH_DIR }}",
     "watch-dir-enabled": {{ .Env.TRANSMISSION_WATCH_DIR_ENABLED }}
 }
-
